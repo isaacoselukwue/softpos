@@ -46,7 +46,9 @@ def get_bam_report_data():
                     domain = urllib.parse.urlunsplit((urllib.parse.urlparse(base_url).scheme, urllib.parse.urlparse(base_url).netloc, '', '', ''))
                     return urllib.parse.urljoin(domain, pdf_path)
         except Exception as e:
-            st.error(f"Failed to get BAM report URL: {e}")
+            # st.error(f"Failed to get BAM report URL: {e}")
+            pass
+            
         return None
 
     def extract_text_from_pdf(pdf_url):
