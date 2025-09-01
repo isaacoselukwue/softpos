@@ -1,0 +1,6 @@
+streamlit
+pandas
+requests
+pypdf
+beautifulsoup4
+google-play-scraper
