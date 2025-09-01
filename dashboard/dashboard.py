@@ -166,44 +166,58 @@ if st.sidebar.button('🔄 Refresh Data'):
     st.cache_data.clear()
     st.rerun()
 
-st.header("📈 Key Payment System Metrics (2022 vs 2023)")
-bam_df = get_bam_report_data()
-if not bam_df.empty:
-    st.dataframe(bam_df, use_container_width=True, hide_index=True)
-    if 'bam_source_url' in st.session_state:
-        st.caption(f"Source: Bank Al-Maghrib Annual Report. [Link]({st.session_state.bam_source_url})")
-else:
-    st.warning("Could not display BAM report data.")
+tab1, tab2 = st.tabs(["📈 Key Payment System Metrics", "📱 Mobile Wallet App Performance"])
 
+with tab1:
+    st.header("Key Payment System Metrics (2022 vs 2023)")
+    bam_df = get_bam_report_data()
+    if not bam_df.empty:
+        st.dataframe(bam_df, use_container_width=True, hide_index=True)
+        if 'bam_source_url' in st.session_state:
+            st.caption(f"Source: Bank Al-Maghrib Annual Report. [Link]({st.session_state.bam_source_url})")
+    else:
+        st.warning("Could not display BAM report data.")
 
-st.header("📱 Mobile Wallet App Performance")
-apps_df = get_app_store_data()
+with tab2:
+    st.header("Mobile Wallet App Performance")
+    apps_df = get_app_store_data()
 
-if not apps_df.empty:
-    st.sidebar.header("Filter Mobile Apps")
+    if not apps_df.empty:
+        col1, col2, col3 = st.columns([1, 2, 2])
 
-    platforms = st.sidebar.multiselect(
-        "Select Platform(s):",
-        options=apps_df['Platform'].unique(),
-        default=apps_df['Platform'].unique()
-    )
+        with col1:
+            platforms = st.multiselect(
+                "Platform(s)",
+                options=apps_df['Platform'].unique(),
+                default=apps_df['Platform'].unique(),
+                label_visibility="collapsed",
+                placeholder="Select Platform(s)"
+            )
 
-    wallets = st.sidebar.multiselect(
-        "Select Wallet(s):",
-        options=sorted(apps_df['Wallet'].unique()),
-        default=sorted(apps_df['Wallet'].unique())
-    )
+        with col2:
+            wallets = st.multiselect(
+                "Wallet(s)",
+                options=sorted(apps_df['Wallet'].unique()),
+                default=sorted(apps_df['Wallet'].unique()),
+                label_visibility="collapsed",
+                placeholder="Select Wallet(s)"
+            )
 
-    search_term = st.sidebar.text_input("Search in Description:")
+        with col3:
+            search_term = st.text_input(
+                "Search", 
+                placeholder="Search in description...",
+                label_visibility="collapsed"
+            )
 
-    filtered_df = apps_df[
-        apps_df['Platform'].isin(platforms) &
-        apps_df['Wallet'].isin(wallets)
-    ]
-    if search_term:
-        filtered_df = filtered_df[filtered_df['Description'].str.contains(search_term, case=False, na=False)]
-    
-    st.dataframe(filtered_df, use_container_width=True, hide_index=True)
-    st.caption(f"Showing {len(filtered_df)} of {len(apps_df)} total app entries. Data scraped on {datetime.today().strftime('%Y-%m-%d')}.")
-else:
-    st.warning("Could not display app store data.")
+        filtered_df = apps_df[
+            apps_df['Platform'].isin(platforms) &
+            apps_df['Wallet'].isin(wallets)
+        ]
+        if search_term:
+            filtered_df = filtered_df[filtered_df['Description'].str.contains(search_term, case=False, na=False)]
+        
+        st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+        st.caption(f"Showing {len(filtered_df)} of {len(apps_df)} total app entries. Data scraped on {datetime.today().strftime('%Y-%m-%d')}.")
+    else:
+        st.warning("Could not display app store data.")
