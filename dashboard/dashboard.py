@@ -172,7 +172,7 @@ with tab1:
     st.header("Key Payment System Metrics (2022 vs 2023)")
     bam_df = get_bam_report_data()
     if not bam_df.empty:
-        st.dataframe(bam_df, use_container_width=True, hide_index=True)
+        st.dataframe(bam_df, width='stretch', hide_index=True)
         if 'bam_source_url' in st.session_state:
             st.caption(f"Source: Bank Al-Maghrib Annual Report. [Link]({st.session_state.bam_source_url})")
     else:
@@ -217,7 +217,7 @@ with tab2:
         if search_term:
             filtered_df = filtered_df[filtered_df['Description'].str.contains(search_term, case=False, na=False)]
         
-        st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+        st.dataframe(filtered_df, width='stretch', hide_index=True)
         st.caption(f"Showing {len(filtered_df)} of {len(apps_df)} total app entries. Data scraped on {datetime.today().strftime('%Y-%m-%d')}.")
     else:
         st.warning("Could not display app store data.")
